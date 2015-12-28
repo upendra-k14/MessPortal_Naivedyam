@@ -6,21 +6,11 @@ from django.utils import timezone
 from datetime import timedelta
 
 # Create your models here.
-
 class Meal(models.Model):
 	name = models.CharField(max_length=30)
 	booktime = models.DurationField(default=timedelta())
 	canceltime = models.DurationField(default=timedelta())
 	rate = models.FloatField()
-
-	def __str__(self):
-		return self.name
-
-class Mess(models.Model):
-	name = models.CharField(max_length=100)
-	venue = models.CharField(max_length=100)
-	capacity = models.IntegerField()
-	vendor = models.CharField(max_length=100)
 
 	def __str__(self):
 		return self.name
@@ -33,6 +23,22 @@ class Account(models.Model):
         def __str__(self):
                 return str(self.balance)
 
+class Vendor(models.Model):
+        id = models.OneToOneField(User, primary_key=True)
+        account_balance = models.OneToOneField(Account)
+
+        #def __str__(self):
+        #        return self.id.first_name+" "+self.id.last_name
+
+
+class Mess(models.Model):
+	name = models.CharField(max_length=100)
+	venue = models.CharField(max_length=100)
+	capacity = models.IntegerField()
+	vendor = models.OneToOneField(Vendor)
+
+	def __str__(self):
+		return self.name
 
 class Student(models.Model):
 	id = models.OneToOneField(User, primary_key=True)
@@ -40,28 +46,21 @@ class Student(models.Model):
 	rollno = models.CharField(max_length=20)
 	default_mess = models.CharField(max_length=100)
 
-	def __str__(self):
-		return self.id.first_name+" "+self.id.last_name
+	#def __str__(self):
+	#	return self.id.first_name+" "+self.id.last_name
 
 class Non_Student(models.Model):
 	id = models.OneToOneField(User, primary_key=True)
 	account_balance = models.OneToOneField(Account)
 	default_mess = models.CharField(max_length=100)
 	
-	def __str__(self):
-                return self.id.first_name+" "+self.id.last_name
-
-class Vendor(models.Model):
-	id = models.OneToOneField(User, primary_key=True)
-	account_balance = models.OneToOneField(Account)
-
-	def __str__(self):
-                return self.id.first_name+" "+self.id.last_name
+	#def __str__(self):
+        #        return self.id.first_name+" "+self.id.last_name
 
 class Unregister(models.Model):
-	unreg_date = models.DateTimeField()
-	mealid = models.ForeignKey(Meal)
+	sid = models.ForeignKey(User)
 	unreg_date = models.DateField()
+	mealid = models.ForeignKey(Meal)
 
 class Booking(models.Model):
 	sid = models.ForeignKey(User)
